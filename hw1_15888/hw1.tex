@@ -1,0 +1,531 @@
+\documentclass{homework}
+\usepackage{notation}
+\usepackage{tikz-qtree}
+
+
+\course{15-888 Computational Game Solving (Fall 2025)}
+\homework{1}
+\releasedate{Sep. 28, 2025}
+\duedate{Oct. 10, 2025}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\student{\todo{Your Andrew ID here}}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Instructions} Submit your homework on Gradescope. Submit a single {\tt pdf} file containing {\bf both} your written solutions {\bf and} your code ({\tt stub.py}) attached to the end (for example, using a {\tt verbatim} environment). You can (but are not required to) typeset your written solutions in the \texttt{.tex} file provided in the homework \texttt{.zip}. 
+
+\section{A Regret-based proof of the minimax theorem (20 points)}
+
+Let $\cX \subseteq \mathbb{R}^{m_1}$ and $\cY \subseteq \mathbb{R}^{m_2}$ be convex and compact sets, and $\mat{A} \in \mathbb{R}^{m_1 \times m_2}$. The minimax theorem asserts that
+\[
+    \min_{\vec{x}\in\cX} \max_{\vec{y}\in\cY} \langle \vec{x}, \mat{A} \vec{y} \rangle = \max_{\vec{y}\in\cY} \min_{\vec{x}\in\cX} \langle \vec{x}, \mat{A} \vec{y} \rangle.
+\]
+In this problem, you will show that the mere existence of (external) regret minimization algorithms is powerful enough to imply the minimax theorem.
+
+One direction (called \emph{weak duality}) of the proof is easy and very general. Specifically, show the following.
+
+\begin{problem}[5 points]
+    Show that
+    \[
+        \min_{\vec{x}\in\cX} \max_{\vec{y}\in\cY} \langle \vec{x}, \mat{A} \vec{y} \rangle \geq \max_{\vec{y}\in\cY} \min_{\vec{x}\in\cX} \langle \vec{x}, \mat{A} \vec{y} \rangle.
+        \numberthis{eq:weak duality}
+    \]
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+
+To show the reverse inequality, we will employ regret minimization to solve the bilinear saddle point problem $\max_{\vec{y}\in\cY} \min_{\vec{x}\in\cX} \langle \vec{x}, \mat{A} \vec{y} \rangle$. At each time $t$, we will let a regret minimizer $\regbox_\cY$ pick strategies $\vec{y}^{(t)} \in\cY$, whereas we will always assume that $\vec{x}^{(t)} \in\cX$ is chosen by the environment to best respond to $\vec{y}^{(t)}$, that is,
+\[
+    \vec{x}^{(t)} \in \argmin_{\vec{x} \in \cX} \langle \vec{x}, \mat{A} \vec{y}^{(t)} \rangle .
+\]
+The utility function observed by $\regbox_\cY$ at each time $t$ is set to
+\begin{equation}
+    u^t_\cY : \vec{y} \mapsto \langle \vec{x}^{(t)}, \mat{A} \vec{y} \rangle = \langle \vec{y}, \mat{A}^\top \vec{x}^{(t)} \rangle .
+\end{equation}
+We will assume that $\regbox_\cY$ guarantees \emph{sublinear regret} under any sequence of utilities; we have seen many algorithms with this property, such as $\ftrl$ and $\RM$.
+
+Let $\bar{\vec{x}}^{(T)} \in \cX$ and $\bar{\vec{y}}^{(T)} \in \cY$ be the average strategies output up to time $T$, that is,
+\[
+    \bar{\vec{x}}^{(T)} \defeq \frac{1}{T}\sum_{t=1}^T \vec{x}^{(t)} \qquad \bar{\vec{y}}^{(T)} \defeq \frac{1}{T}\sum_{t=1}^T \vec{y}^{(t)}.
+\]
+
+\begin{problem}[5 points]
+    Argue that at all $t$,
+    \[
+        \max_{\vec{y} \in \cY} \min_{\vec{x}\in\cX} \langle \vec{x}, \mat{A} \vec{y} \rangle \ge \frac{1}{T} \min_{\vec{x}\in\cX} \sum_{t=1}^T \langle \vec{x}, \mat{A} \vec{y}^{(T)} \rangle  \ge \frac{1}{T}\sum_{t=1}^T \langle \vec{x}^{(t)}, \mat{A} \vec{y}^{(t)} \rangle .
+        \numberthis{eq:minmax bound}
+    \]
+    \hint{use the definition of $\bar{\vec{y}}^{(T)}$. Then, use the information you have on $\vec{x}^{(t)}$.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+
+\begin{problem}[5 points]
+    Let $\reg_\cY^{(T)}$ be the regret accumulated by $\regbox_\cY$ up to time $T$. Using~\eqref{eq:minmax bound}, argue that at all times $T$
+    \[
+        \max_{\vec{y}\in\cY}\min_{\vec{x}\in\cX} \langle \vec{x}, \mat{A} \vec{y} \rangle \ge \min_{\vec{x}\in\cX} \max_{\vec{y}\in\cY} \langle \vec{x}, \mat{A} \vec{y} \rangle - \frac{\reg^{(T)}_\cY}{T}.
+        \numberthis{eq:minmax bound 2}
+    \]
+    \hint{use the definition of regret $\reg_\cY^{(T)}$.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+
+\begin{problem}[5 points]
+    Use~\eqref{eq:minmax bound 2} and~\eqref{eq:weak duality} and to conclude that
+    \[
+        \max_{\vec{y} \in \cY}\min_{\vec{x} \in \cX} \langle \vec{x}, \mat{A} \vec{y} \rangle = \min_{\vec{x}\in\cX}\max_{\vec{y}\in\cY} \langle \vec{x}, \mat{A} \vec{y} \rangle,
+    \]
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+\section{Deriving CFR from regret circuits}
+
+In this problem, you will derive CFR using regret circuits. For your convenience, we include the pseudocode from Lecture 5 for the subroutine that computes the counterfactual utilities (\Cref{alg:cfr_regret_minimizer}). 
+
+Recall that the sequence-form strategy set can be decomposed as follows. First, in any observation point $k \in \cK$ with a set of children $\{p_1, \dots, p_\nu \} = \{ \rho(k, s) : s \in \mathcal{S}_k \}$,
+\begin{equation}
+    \label{eq:cartesian}
+    \cX_{k} = \cX_{p_1} \times \cX_{p_2} \times \dots \times \cX_{p_\nu},
+\end{equation}
+where $\cX_{p_i}$ is the sequence-form polytope corresponding to the subtree rooted at point $p_i$. Second, in any decision point $j \in \cJ$ with a set of children $\{ p_1, \dots, p_\nu \} = \{ \rho(j, a) : a \in \mathcal{A}_j \}$,
+\begin{equation}
+    \label{eq:convexhull}
+    \cX_{j} \defeq \co \left\{ 
+    \begin{pmatrix}
+    \vec{e}_1 \\
+    \cX_{p_1} \\
+    \vec{0} \\
+    \vdots \\
+    \vec{0}
+    \end{pmatrix},
+    \begin{pmatrix}
+    \vec{e}_2 \\
+    \vec{0} \\
+    \cX_{p_2} \\
+    \vdots \\
+    \vec{0}
+    \end{pmatrix},
+     \dots,
+     \begin{pmatrix}
+    \vec{e}_\nu \\
+    \vec{0} \\
+    \vec{0} \\
+    \vdots \\
+    \cX_{p_\nu}
+    \end{pmatrix}
+    \right\},
+\end{equation}
+where $\vec{e}_i \in \mathbb{R}^{\mathcal{A}_j}$ is the $i$th unit vector.
+
+\begin{algorithm}[h]
+\caption{Counterfactual regret minimization ($\cfr$)}
+\label{alg:cfr_regret_minimizer}
+\textbf{Input:} A regret minimizer $\regbox_j$ for each decision point $j \in \mathcal{J}$ of the tree-form decision process.
+\BlankLine
+\textsc{ObserveUtility}$(\vec{u}^{(t)} \in \mathbb{R}^{\Sigma})$: \\
+\Indp{
+    $V^{(t)}[\bot] \defeq 0$\;
+    \For{each node in the tree $p \in \mathcal{J} \cup \mathcal{K}$ in bottom-up order}{
+        \If{$p \in \mathcal{J}$}{
+            Let $j=v$\;
+            $V^{(t)}[j] \defeq \sum_{a \in \mathcal{A}_j} b_j^{(t)}[a] \cdot (\vec{u}^{(t)}[(j, a)] + V^{(t)}[\rho(j, a)])$\;
+        }
+        \Else{
+            Let $k=p$\;
+            $V^{(t)}[k] \defeq \sum_{s \in \mathcal{S}_k} V^{(t)}[\rho(k, s)]$\;
+        }
+    }
+    \For{each decision point $j \in \mathcal{J}$}{
+        \For{each action $a \in \mathcal{A}_j$}{
+            $\vec{u}_j^{(t)}[a] \defeq \vec{u}^{(t)}[(j, a)] + V^{(t)}[\rho(j, a)]$\;
+        }
+        $\regbox_j.\textsc{ObserveUtility}(\vec{u}_j^{(t)})$\;
+    }
+    }
+    \Indm
+\end{algorithm}
+
+You will prove soundness of $\cfr$ by induction, proceeding in a bottom-up fashion.
+
+\begin{problem}[5 points]
+    Argue that the utility at every terminal decision point $j \in \mathcal{J}$ is given by $\vec{u}^{(t)}_j[a] = \vec{u}^{(t)}[(j, a)]$ for all $a \in \mathcal{A}_j$.
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+\begin{problem}[5 points]
+    Apply the regret circuit for the Cartesian product in each observation node $p \in \mathcal{K}$. Derive the utility vectors given as input to the children of $p$.  
+    \hint{Use the decomposition given in~\eqref{eq:cartesian}.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+\begin{problem}[10 points]
+    Apply the regret circuit for the convex hull in each decision node $p \in \mathcal{J}$. Derive the utility vector given as input to the regret minimizer $\regbox_j$ that is responsible for mixing over $\mathcal{A}_j$, and show that it matches the utilities specified in~\Cref{alg:cfr_regret_minimizer}.
+    \hint{Use the decomposition given in~\eqref{eq:convexhull}.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+\begin{problem}[10 points]
+    Show that the regret of $\cfr$ is bounded by $\sum_{j \in \cJ} \max\{0, \reg_j^{(T)} \}$, where $\reg_j^{(T)}$ is the regret of $\regbox_j$. What is the regret of $\cfr$ when each $\regbox_j$ is instantiated using $\mwu$? What is the regret of $\cfr$ when each $\regbox_j$ is instantiated using $\RM$?
+    \hint{Recall that the regret bound depends on the norm of the utility; argue about how large that norm can be.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+
+
+\section{Linear programming for solving extensive-form zero-sum games, and application to low randomization in poker (50 points)}
+
+In many games, the optimal Nash equilibrium requires that all players randomize their moves. As an example, consider rock-paper-scissors: any deterministic strategy (for example, always playing rock) is heavily suboptimal. In this problem, you will quantify how much value is lost by insisting on playing deterministic strategies in three games: rock-paper-superscissors and two well-known poker variants---Kuhn poker~\citep{Kuhn50:Simplified} and Leduc poker~\citep{Southey05:Bayes}. A description of each game is given in the zip of this homework. The description is specified in \cref{sec:format}. The zip of the homework also contains a stub Python file to help you set up your implementation. 
+
+\subsection{Format of the game files}\label{sec:format}
+
+Each game is encoded as a json file with the following structure.
+\begin{itemize}
+    \item At the root, we have a dictionary with three keys: \verb|decision_problem_pl1|, \verb|decision_problem_pl2|, and \verb|utility_pl1|. The first two keys contain a description of the tree-form sequential decision problems faced by the two players, while the third is a description of the bilinear utility function for Player 1 as a function of the sequence-form strategies of each player. Since both games are zero-sum, the utility for Player 2 is the opposite of the utility of Player 1.
+    \item The tree of decision points and observation points for each decision problem is stored as a list of nodes. Each node has the following fields:
+    \begin{description}
+        \item[\texttt{id}] is a string that represents the identifier of the node. The identifier is unique among the nodes for the same player.
+        \item[\texttt{type}] is a string with value either \verb|decision| (for decision points) or \verb|observation| (for observation points).
+        \item[\texttt{actions}] (only for decision points). This is a set of strings, representing the actions available at the decision node.
+        \item[\texttt{signals}] (only for observation points). This is a set of strings, representing the signals that can be observed at the observation node.
+        \item[\texttt{parent\_edge}] identifies the parent edge of the node. If the node is the root of the tree, then it is \verb|null|. Else, it is a pair \verb|(parent_node_id, action_or_signal)|, where the first member is the \verb|id| of the parent node, and \verb|action_or_signal| is the action or signal that connects the node to its parent.
+        \item[\texttt{parent\_sequence}] (only for decision points). Identifies the parent sequence $p_j$ of the decision point, defined as the last sequence (that is, decision point-action pair) encountered on the path from the root of the
+        decision process to $j$.
+    \end{description}
+    \begin{remark}
+        The list of nodes of the tree-form sequential decision process is given in top-down traversal order. The bottom-up traversal order can be obtained by reading the list of nodes backwards.
+    \end{remark}
+    \item The bilinear utility function for Player~1 is given through the payoff matrix $\mat{A}$ such that the (expected) utility of Player~1 can be written as
+    \[
+        u_1(\vec{x}, \vec{y}) = \langle \vec{x}, \mat{A} \vec{y} \rangle,
+    \]
+    where $\vec{x}$ and $\vec{y}$ are sequence-form strategies for Players~1 and 2 respectively. We represent $\mat{A}$ in the file as a list of all non-zero matrix entries, storing for each the row index, column index, and value. Specifically, each entry is an object with the fields
+    \begin{description}
+        \item[\texttt{sequence\_pl1}] is a pair \verb|(decision_pt_id_pl1, action_pl1)| which represents the sequence of Player~1 (row of the entry in the matrix).
+        \item[\texttt{sequence\_pl2}] is a pair \verb|(decision_pt_id_pl2, action_pl2)| which represents the sequence of Player~2 (column of the entry in the matrix).
+        \item[\texttt{value}] is the non-zero float value of the matrix entry. 
+    \end{description}
+\end{itemize}
+
+\paragraph{Example: Rock-paper-superscissors}
+
+In the case of rock-paper-superscissors the decision problem faced by each of the players has only one decision points with three actions: playing rock, paper, or superscissors. So, each tree-form sequential decision process only has a single node, which is a decision node. The payoff matrix of the game is
+\begin{center}
+    \begin{tikzpicture}
+        \tikzset{every left delimiter/.style={xshift=1.5ex},
+                every right delimiter/.style={xshift=-1ex}};
+        \matrix [matrix of math nodes,left delimiter=(,right delimiter=),row sep=.008cm,column sep=.008cm,color=black](m)
+        {
+         0 & -1 &  1\\
+         1 &  0 & -2\\
+        -1 &  2 &  0\\
+        };
+        \node at (m-2-3 -| 1.4,0) {.};
+        
+        \node at (m-1-1 -| -1.5,0) {r};
+        \node at (m-2-1 -| -1.5,0) {p};
+        \node at (m-3-1 -| -1.5,0) {s};
+        
+        \node at (m-1-1 |- 0,1.0) {r};
+        \node at (m-1-2 |- 0,1.0) {p};
+        \node at (m-1-3 |- 0,1.0) {s};
+    \end{tikzpicture}
+\end{center}
+So, the game file in this case has content:
+
+{\small\begin{verbatim}
+{
+  "decision_problem_pl1": [
+    {"id": "d1_pl1", "type": "decision", "actions": ["r", "p", "s"],
+     "parent_edge": null, "parent_sequence": null}
+  ],
+  "decision_problem_pl2": [
+    {"id": "d1_pl2", "type": "decision", "actions": ["r", "p", "s"],
+     "parent_edge": null, "parent_sequence": null}
+  ],
+  "utility_pl1": [
+    {"sequence_pl1": ["d1_pl1", "r"], "sequence_pl2": ["d1_pl2", "p"], "value": -1},
+    {"sequence_pl1": ["d1_pl1", "r"], "sequence_pl2": ["d1_pl2", "s"], "value": 1},
+    {"sequence_pl1": ["d1_pl1", "p"], "sequence_pl2": ["d1_pl2", "r"], "value": 1},
+    {"sequence_pl1": ["d1_pl1", "p"], "sequence_pl2": ["d1_pl2", "s"], "value": -2},
+    {"sequence_pl1": ["d1_pl1", "s"], "sequence_pl2": ["d1_pl2", "r"], "value": -1},
+    {"sequence_pl1": ["d1_pl1", "s"], "sequence_pl2": ["d1_pl2", "p"], "value": 2}
+  ]
+}
+\end{verbatim}}
+
+\subsection{Computing the value of the game (15 points)}
+
+As a warm up, you will implement the linear program formulation of Nash equilibrium strategies seen in Lecture~$5$ using the commercial solver Gurobi (\url{https://www.gurobi.com/}). Gurobi is a powerful commercial solver for linear and non-linear optimization problems. You can download the solver and request a free license for academic use from their website.
+
+\paragraph{Installing \texttt{gurobipy}}
+Installation instructions for Gurobi's python bindings are available on the Gurobi website, \href{https://www.gurobi.com/documentation/9.1/quickstart_linux/cs_python.html#section:Python}{here}.\footnote{\texttt{https://www.gurobi.com/documentation/9.1/quickstart\_linux/cs\_python.html\#section:Python}}
+
+\paragraph{Linear programming formulation of Nash equilibrium strategies}
+For your convenience, here are again the linear programs---for Player~$1$ and Player~$2$, respectively---that you need to implement:
+\begin{equation}\label{eq:nash lp}
+    \arraycolsep=1.0pt
+    \mathcal{P}_1 : \mleft\lbrace\begin{array}{l}
+        \displaystyle\max~ \vec{f}_2^\top \vec{v}\\[2mm]
+        \hspace{1mm}\text{\normalfont s.t.}~~ 
+        \arraycolsep=1.4pt
+        \begin{array}[t]{ll}
+            \circled{1}   & \mat{A}^\top \vec{x} - \mat{F}_2^\top \vec{v} \ge \vec{0} \\[1mm]
+            \circled{2}   & \mat{F}_1\vec{x}                      = \vec{f}_1 \\[1mm]
+            \circled{3}   & \vec{x} \ge \vec{0},~\vec{v}~\text{free},
+        \end{array} %\\
+    \end{array}\mright.
+    \hspace{2cm}
+    \mathcal{P}_2 : \mleft\lbrace\begin{array}{l}
+        \displaystyle\max~ \vec{f}_1^\top \vec{v}\\[2mm]
+        \hspace{1mm}\text{\normalfont s.t.}~~ 
+        \arraycolsep=1.4pt
+        \begin{array}[t]{ll}
+            \circled{1}   & -\mat{A} \vec{y} - \mat{F}_1^\top \vec{v} \ge \vec{0} \\[1mm]
+            \circled{2}   & \mat{F}_2\vec{y}                      = \vec{f}_2 \\[1mm]
+            \circled{3}   & \vec{y} \ge \vec{0},~\vec{v}~\text{free},
+        \end{array} %\\
+    \end{array}\mright.
+\end{equation}
+where $\{\vec{x}\in\bbR^{|\Sigma_1|}: \mat{F}_1 \vec{x} = \vec{f}_1, \vec{x}\ge\vec{0}\}$ and $\{\vec{y}\in\bbR^{|\Sigma_2|}: \mat{F}_2 \vec{y} = \vec{f}_2, \vec{y}\ge\vec{0}\}$ are the sequence-form polytopes of the two players, and $\mat{A}$ is the payoff matrix for Player~$1$. Conveniently, the objective values of $\mathcal{P}_1$ and $\mathcal{P}_2$ will be the exact expected utility that each player can secure by playing against a perfectly rational opponent. Since all games are zero sum, the objective values of $\mathcal{P}_1$ and $\mathcal{P}_2$ will sum to $0$ (if they don't, you must have a bug somewhere).
+
+
+\begin{problem}[15 points]\label{prob:unconstrained strat}
+    Implement the linear program for computing Nash equilibrium strategies for both Player~$1$ and Player~$2$.
+    
+    For each of the three games (rock-paper-superscissors, Kuhn poker, and Leduc poker), and for each of the two player, report Gurobi's output.  
+    \hint{make sure to take a look at the ``Gurobi tips and tricks'' at the end of this document. It includes some tips as to how to debug common issues.}
+    \hint{start from rock-paper-superscissors, and only then move to the more complex games.}
+    \hint{since all games are zero-sum, the objective values of $\mathcal{P}_1$ and $\mathcal{P}_2$ must sum to $0$.}
+    \hint{the objective value for $\mathcal{P}_1$ should be $0$ for rock-paper-superscissors, $-0.0555$ for Kuhn poker, and $-0.0856$ for Leduc poker.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here. You should include six Gurobi outputs (3 games, 2 players per game). Feel free to use the \texttt{verbatim} environment in Latex to simply dump the output. Make sure to specify what game and what player each Gurobi output refers to. Don't forget to include your code at the end of your homework. For example, your output in the case of rock-paper-superscissors for Player~$1$ should look roughly like this}
+    \color{violet}\begin{verbatim}
+Gurobi Optimizer version 9.1.1 build v9.1.1rc0 (linux64)
+Thread count: 8 physical cores, 16 logical processors, using up to 16 threads
+Optimize a model with 4 rows, 4 columns and 12 nonzeros
+Model fingerprint: 0x5264c0a3
+Coefficient statistics:
+    Matrix range     [1e+00, 2e+00]
+    Objective range  [1e+00, 1e+00]
+    Bounds range     [0e+00, 0e+00]
+    RHS range        [1e+00, 1e+00]
+Presolve removed 1 rows and 0 columns
+Presolve time: 0.01s
+Presolved: 3 rows, 4 columns, 11 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+        0    1.0000000e+00   1.000000e+00   0.000000e+00      0s
+        2   -0.0000000e+00   0.000000e+00   0.000000e+00      0s
+
+Solved in 2 iterations and 0.01 seconds
+Optimal objective -0.000000000e+00
+\end{verbatim}
+\end{solution}
+
+
+\subsection{Computing  optimal deterministic strategies (15 points)}
+
+In this subsection we study how much worse each player is if they (but not the opponent) are restricted to playing deterministic strategies only. To model this, we will add a constraint saying that all entries of the sequence-form strategy vectors $\vec{x}$ and $\vec{y}$ in~\eqref{eq:nash lp} can only take values in $\{0, 1\}$. The resulting \emph{integer} programs---which we call $\tilde{\mathcal{P}}_1$ and $\tilde{\mathcal{P}}_2$---are given next.
+\begin{equation}\label{eq:deterministic ilp}
+    \arraycolsep=1.0pt
+    \tilde{\mathcal{P}}_1 : \mleft\lbrace\begin{array}{l}
+        \displaystyle\max~ \vec{f}_2^\top \vec{v}\\[2mm]
+        \hspace{1mm}\text{\normalfont s.t.}~~ 
+        \arraycolsep=1.4pt
+        \begin{array}[t]{ll}
+            \circled{1}   & \mat{A}^\top \vec{x} - \mat{F}_2^\top \vec{v} \ge \vec{0} \\[1mm]
+            \circled{2}   & \mat{F}_1\vec{x}                      = \vec{f}_1 \\[1mm]
+            \circled{3}   & \vec{x} \in \{0,1\}^{|\Sigma_1|},~\vec{v}~\text{free},
+        \end{array} %\\
+    \end{array}\mright.
+    \hspace{2cm}
+    \tilde{\mathcal{P}}_2 : \mleft\lbrace\begin{array}{l}
+        \displaystyle\max~ \vec{f}_1^\top \vec{v}\\[2mm]
+        \hspace{1mm}\text{\normalfont s.t.}~~ 
+        \arraycolsep=1.4pt
+        \begin{array}[t]{ll}
+            \circled{1}   & -\mat{A} \vec{y} - \mat{F}_1^\top \vec{v} \ge \vec{0} \\[1mm]
+            \circled{2}   & \mat{F}_2\vec{y}                      = \vec{f}_2 \\[1mm]
+            \circled{3}   & \vec{y} \in \{0,1\}^{|\Sigma_2|},~\vec{v}~\text{free}.
+        \end{array} %\\
+    \end{array}\mright.
+\end{equation}
+
+\begin{problem}[15 points]\label{prob:deterministic strat}
+    Implement the integer programs given in~\eqref{eq:deterministic ilp} for computing optimal deterministic strategies for both Player~$1$ and Player~$2$. 
+    
+    For each of the three games (rock-paper-superscissors, Kuhn poker, and Leduc poker), and for each of the two player, report Gurobi's output. 
+    \hint{make sure to take a look at the ``Gurobi tips and tricks'' at the end of this document. It includes some tips as to how to debug common issues.}
+    \hint{start from rock-paper-superscissors, and only then move to the more complex games.}
+    \hint{here there are \emph{no guarantees} that the value of $\tilde{\mathcal{P}}_1$ and the value of $\tilde{\mathcal{P}}_2$ sum to $0$ anymore! In fact, that will be false in all games.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here. You should include six Gurobi outputs (3 games, 2 players per game). Feel free to use the \texttt{verbatim} environment in Latex to simply dump the output. Make sure to specify what game and what player each Gurobi output refers to. Don't forget to include your code at the end of your homework. For example, your output in the case of Kuhn poker for Player~$1$ should look roughly like this}
+    \color{violet}\begin{verbatim}
+Gurobi Optimizer version 9.1.1 build v9.1.1rc0 (linux64)
+Thread count: 8 physical cores, 16 logical processors, using up to 16 threads
+Optimize a model with 18 rows, 18 columns and 57 nonzeros
+Model fingerprint: 0x57532587
+Variable types: 6 continuous, 12 integer (12 binary)
+Coefficient statistics:
+    Matrix range     [2e-01, 1e+00]
+    Objective range  [1e+00, 1e+00]
+    Bounds range     [1e+00, 1e+00]
+    RHS range        [1e+00, 1e+00]
+Found heuristic solution: objective -0.3333335
+Presolve removed 11 rows and 10 columns
+Presolve time: 0.00s
+Presolved: 7 rows, 8 columns, 22 nonzeros
+Found heuristic solution: objective -0.3333333
+Variable types: 0 continuous, 8 integer (5 binary)
+
+Root relaxation: objective -5.555556e-02, 9 iterations, 0.00 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0   -0.05556    0    3   -0.33333   -0.05556  83.3%     -    0s
+H    0     0                      -0.1666667   -0.05556  66.7%     -    0s
+     0     0   -0.05556    0    3   -0.16667   -0.05556  66.7%     -    0s
+
+Explored 1 nodes (9 simplex iterations) in 0.00 seconds
+Thread count was 16 (of 16 available processors)
+
+Solution count 3: -0.166667 -0.333333 -0.333333
+No other solutions better than -0.166667
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -1.666666666667e-01, best bound -1.666666666667e-01, gap 0.0000%
+    \end{verbatim}
+\end{solution}
+
+
+\subsection{Controlling the amount of determinism (20 points)}
+
+In \cref{prob:unconstrained strat} no determinism constraint was present. At the other extreme, in \cref{prob:deterministic strat} we insisted that at all decision points a deterministic strategy be followed. In this last subsection we will explore intermediate cases: for each value of $k$, we will study how much value each player can secure if they are constrained to play deterministically in at least $k$ decision points. When $k=0$, we will recover the objective values seen in \cref{prob:unconstrained strat}. When $k$ is equal to the number of decision points of the player in the game, we will recover the objective values seen in \cref{prob:deterministic strat}.
+
+\paragraph{Integer programming model} An optimal strategy for Player~$1$ subject to the constraint that at least $k$ decision points must prescribe a deterministic strategy can be obtained as the solution to the integer linear program $\mathcal{P}_1(k)$ given in~\eqref{eq:controlling ilp pl1}. Understanding the details is not important for this problem, though we included a description of the meaning of each constraint just in case you are curious. 
+
+\begin{equation}\label{eq:controlling ilp pl1}
+    \arraycolsep=1.0pt
+    \mathcal{P}_1(k) : \mleft\lbrace\begin{array}{l}
+        \displaystyle\max~ \vec{f}_2^\top \vec{v}\\[2mm]
+        \hspace{1mm}\text{\normalfont s.t.}~~ 
+        \arraycolsep=1.4pt
+        \begin{array}[t]{lll}
+            \circled{1}   & \mat{A}^\top \vec{x} - \mat{F}_2^\top \vec{v} \ge \vec{0} \\[1mm]
+            \circled{2}   & \mat{F}_1\vec{x}                      = \vec{f}_1 \\[2mm]
+            \circled{3}   & \vec{x}[(j,a)] \ge \vec{z}[(j,a)] & \forall j\in\cJ_1: p_j = \emptyseq,~~a\in \mathcal{A}_j\\[4mm]
+            \circled{4}   & \vec{x}[(j,a)] \ge \vec{x}[p_j] + \vec{z}[(j,a)] - 1 & \forall j\in\cJ_1: p_j \neq \emptyseq,~~a\in \mathcal{A}_j\\[4mm]
+            \circled{5}   & \displaystyle\sum_{a\in \mathcal{A}_j} \vec{z}[(j,a)] \le 1  & \forall\,j\in\cJ_1\\[4mm]
+            \circled{6}   & \displaystyle\sum_{j\in \cJ_1} \sum_{a\in \mathcal{A}_j} \vec{z}[(j,a)]\ge k\\[6mm]
+            \circled{7}   & \vec{x} \ge \vec{0},~\vec{z}\in\{0,1\}^{|\Sigma_1|},~\vec{v}~\text{free},
+        \end{array} %\\
+    \end{array}\mright.
+\end{equation}
+\begin{itemize}
+    \item $\vec{z} \in \{0,1\}^{|\Sigma_1|}$ is a binary vector that decides, for each strategy $(j,a) \in \Sigma_1$ of Player~$1$, whether to pick action $a$ at $j$ with probability $1$. Since the strategy vector $\vec{x}$ is expressed in sequence-form, picking action $a$ with probability $1$ at $j$ is expressed through constraints \circled{3} and \circled{4}.
+    \item Constraint \circled{5} asserts that no more than one action at each decision point can be forced to be played with probability $1$.
+    \item Constraint \circled{6} asserts that in at least $k$ decision point, exactly one of the actions will be forced to be played with probability $1$.
+\end{itemize}
+
+The integer program $\mathcal{P}_2(k)$ for Player~$2$ is analogous.
+
+\begin{problem}[15 points]
+    Implement the integer linear programs $\mathcal{P}_1(k)$ and $\mathcal{P}_2(k)$, described above, for computing optimal strategies with a given lower bound on the amount of determinism. 
+
+    For each of the three games (rock-paper-superscissors, Kuhn poker, and Leduc poker), and for each of the two player $i$, plot the objective value of $\mathcal{P}_i(k)$ as a function of $k \in \{0, \dots, |\cJ_i|\}$ (number of decision points of Player~$i$).
+    \hint{make sure to take a look at the ``Gurobi tips and tricks'' at the end of this document. It includes some tips as to how to debug common issues.}
+    \hint{Gurobi can be pretty verbose by default. For this problem, if you would like to silence Gurobi you can use \texttt{m.setParam("OutputFlag", 0)}}
+    \hint{For Leduc poker, if Gurobi is taking too long to optimize when $k$ is large, you can lower the solution precision by calling \texttt{m.setParam("MIPGap", 0.01)} before \texttt{m.optimize()}. Expect a runtime of up to one-five hours for Leduc poker, depending on how powerful the machine you are using is.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here. You should include six plots (3 games, 2 players per game). Make sure to specify what game and what player each plot refers to. Don't forget to include your code at the end of your homework.}
+\end{solution}
+
+\begin{problem}[5 points]
+    Comment on the results you obtained in this problem: do highly-deterministic strategies for the three small games exist? Are the results what you expected? If yes, what did he results confirm? If not, how do you think you can reconcile your previous intuition with the experimental findings?
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+\appendix
+\section{Appendix: Gurobi tips and tricks}
+
+\paragraph{Basic notation}
+Let \texttt{m} denote the Gurobi model object. Then, here is a quick cookbook.
+\begin{itemize}
+    \item Add a continuous free variable:\newline\verb|m.addVar(-GRB.INFINITY, GRB.INFINITY, vtype=GRB.CONTINUOUS, name="human_var_name_here")|
+    \item Add a continuous nonnegative variable:\newline\verb|m.addVar(0.0, GRB.INFINITY, vtype=GRB.CONTINUOUS, name="human_var_name_here")|
+    \item Add a binary variable:\newline\verb|m.addVar(0.0, 1.0, vtype=GRB.BINARY, name="human_var_name_here")|
+    \item Add an equality constraint:\newline\verb|m.addConstr(lhs == rhs)|
+    \item Add an inequality $(\ge)$ constraint:\newline\verb|m.addConstr(lhs >= rhs)|
+    \item Set a maximization objective:\newline\verb|m.setObjective(obj, sense=GRB.MAXIMIZE)|
+\end{itemize}
+
+\paragraph{Accessing the solution} After calling \verb|m.optimize()|, you can obtain the objective value by calling
+\begin{verbatim}
+    m.getAttr(GRB.Attr.ObjVal)
+\end{verbatim}
+
+If you want to inspect the solution, given a variable object \texttt{v} (the object returned by \texttt{m.addVar}), you can access the value of \texttt{v} in the current solution by calling
+\begin{verbatim}
+    v.getAttr(GRB.Attr.X)
+\end{verbatim}
+
+\paragraph{Troubleshooting} First of all, if you are having a problem with Gurobi, the first thing you should try to do is to ask Gurobi to dump the model that it thinks you are asking to solve to a file in a human readable format. \emph{Reading the model file will be so much easier if you gave names to the variables in your model, using the `\texttt{name}' optional argument of \texttt{addVar}.}
+
+To have Gurobi dump the model, you can use something like this:
+\begin{verbatim}
+    m.write("/tmp/model.lp")
+\end{verbatim}
+Of course, you can specify a different path. However, it is important that you keep the `\texttt{.lp}' extension: there are multiple format that Gurobi can output, and it uses the file extension to guess which format you want.
+
+Beyond the general rule of thumb above, make sure of the following:
+\begin{itemize}
+    \item Start from rock-paper-superscissors. There, the \verb|/tmp/model.lp| file for Player 1 for \cref{prob:unconstrained strat} should look something like this (probably with different variable names):
+\begin{verbatim}
+\ Model game_value_pl1
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+Maximize
+    v[d1_pl2]
+Subject To
+    R0: x[('d1_pl1',_'p')] - x[('d1_pl1',_'s')] - v[d1_pl2] >= 0
+    R1: - x[('d1_pl1',_'r')] + 2 x[('d1_pl1',_'s')] - v[d1_pl2] >= 0
+    R2: x[('d1_pl1',_'r')] - 2 x[('d1_pl1',_'p')] - v[d1_pl2] >= 0
+    R3: x[('d1_pl1',_'r')] + x[('d1_pl1',_'p')] + x[('d1_pl1',_'s')] = 1
+Bounds
+    v[d1_pl2] free
+End    
+\end{verbatim}
+    \emph{Note:} Gurobi omits listing nonnegative variables in the \verb|Bounds| section.
+    \item Did you remember to specify that you want a \emph{maximization} problem? (Gurobi's default is minimization) If Gurobi says that the model is unbounded, chances are you forgot.
+    \item Check that the number of variables and constraints is what you expect. Are the sense of the constraints (equality, $\le$, $\ge$) what you wanted?
+\end{itemize}
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+\end{document}
