@@ -1,0 +1,393 @@
+\documentclass{homework}
+\usepackage{notation}
+\usepackage{tikz-qtree}
+\usepackage{parskip}
+
+\setlist{nosep}
+
+\course{15-888 Computational Game Solving (Fall 2025)}
+\homework{2}
+\releasedate{Oct. 12, 2025}
+\duedate{Oct. 31, 2025}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\student{\todo{Your Andrew ID here}}
+\newcommand{\negent}{\omega}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Instructions} Submit your homework on Gradescope. Submit a single {\tt pdf} file containing {\bf both} your written solutions {\bf and} your code attached to the end (for example, using a {\tt verbatim} environment). You can (but are not required to) typeset your written solutions in the \texttt{.tex} file provided in the homework \texttt{.zip}. 
+
+\section{(Coarse) Correlated equilibria and dominated actions (20 points)}
+
+An action $a_i \in \calA_i$ {\em strictly dominates} another action $a_i' \in \calA_i$ if $u_i(a_i, a_{-i}) > u_i(a_i', a_{-i})$ for every possible opponent action profile $a_{-i}$. In this case, we call $a_i'$ {\em strictly dominated}. If $a_i$ strictly dominates every other action, then we call it {\em strictly dominant.}
+
+\begin{problem}[5 points]
+    Prove that if an action $\hat a_i \in \calA_i$ is \emph{strictly dominant}, then Player $i$ plays $\hat a_i$ with probability $1$ in every coarse correlated equilibrium (CCE).
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+\begin{problem}[5 points]
+    Prove that if an action $\hat a_i \in \calA_i$ is \emph{strictly dominated}, then Player $i$ plays $\hat a_i$ with probability $0$ in every correlated equilibrium (CE).
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+\begin{problem}[10 points]
+    Show that there is a normal-form game and a CCE in that game in which Player 1 plays a strictly dominated action with strictly positive probability. 
+    \hint{Consider the normal-form game
+    \[
+    \begin{bmatrix}
+        (2, 2) & (0, 0) \\
+        (1, 1) & (1, 1) \\
+        (0, 0) & (0, 0)
+    \end{bmatrix}.
+    \]
+    Show that there is a CCE in this game with the desired property.
+    }
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+
+\section{Safe Abstraction (30 points)}
+Consider a two-player zero-sum extensive-form game $\Gamma$ that proceeds as follows. 
+
+{\bf Step 1:}
+\begin{itemize}
+    \item Each player $i \in \{1, 2\}$ privately rolls a fair $n$-sided die, and observes its outcome $\theta_i \in \{1, \dots, n\}$. 
+    \item Both players simultaneously pick actions $a_1, a_2$ from some action set $\calA$ of size $m$.
+\end{itemize}
+{\bf Step 2:}
+\begin{itemize}
+    \item Each player $i \in \{1, 2\}$ privately rolls another fair $n$-sided die, and observes its outcome $\theta_i' \in \{1, \dots, n\}$. 
+    \item Both players again simultaneously pick actions $a_1, a_2 \in \calA$.
+\end{itemize}
+The utility of P1\footnote{This is a zero-sum game: P2's utility is the negative of P1's.} depends only on the sums $\theta_1 + \theta_1'$ and $\theta_2 + \theta_2'$ and the actions $a_1, a_2, a_1', a_2'$. That is, each player only cares about the {\em sum} of their two dice, not on their individual values. 
+
+
+
+Note that we can identify a decision point (information set) of a player $i$ by specifying either $\theta_i$ (for Step 1), or a tuple $(\theta_i, \vec a, \theta'_i)$ (for Step 2), where $\vec a = (a_1, a_2)$.
+
+\subsection{Warm-up}
+
+\begin{problem}[3 points]
+     In terms of $m$ and $n$, how many {\em terminal nodes} does this game have? How many {\em information sets} does each player have? How about {\em sequences}? (No proofs required; just state the answers.)
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+\subsection{Symmetric strategies and CFR}
+
+Let $j_i = (\theta_i, a_i, a_{-i}, \theta_i')$ and $\tilde j_i = (\tilde \theta_i, a_i, a_{-i},  \tilde \theta_i')$ be two infosets of the same player $i$ in Step 2. We say that $j_i$ and $\tilde j_i$ are  {\em equivalent} if $\theta_i + \theta_i'= \tilde\theta_i + \tilde\theta_i'$ (note that this forces the set of actions to be the same in both infosets).
+
+Call a behavioral strategy $\vec{b}_i : \cJ_i \to \Delta(\calA)$, where $\cJ_i$ is player $i$'s information partition, {\em symmetric} if equivalent infosets have identical action distributions, that is, $\vec{b}_i(\cdot|j_i) = \vec{b}_i(\cdot|j_i')$ whenever $j_i, j_i'$ are equivalent.
+
+Suppose both players run CFR with simultaneous (as opposed to alternating) updates. Let $\vec{b}_i^{(t)}$ be the behavioral strategy played by player $i$ at time $t$. In CFR, the counterfactual utility given to the regret minimizer at infoset $j_i \in \cJ_i$ at time $t$ is given by 
+\begin{align}
+    u_i^{(t)}(a_i|j_i) = \sum_{\substack{h \in j_i\\z \succeq ha}} \vec{b}_i^{(t)}(z|(h,a_i)) \cdot  \vec{b}_{-i}^{(t)}(z)\cdot c(z) \cdot u_i(z), \label{eq:cfr}
+\end{align}
+where
+\begin{itemize}
+    \item $(h, a_i)$ is the child of node $h$ reached by playing action $a_i$, 
+    \item the sum is over terminal nodes $z$ that are descendants of nodes $(h,a_i)$ for $h \in j_i$,
+    \item $\vec{b}_i(z|(h,a_i))$ is the probability that player $i$ plays all actions on the $(h, a_i) \to z$ path, 
+    \item $\vec{b}_{-i}(z)$ (resp. $c(z)$) is the probability that the opponent (resp. chance) plays all actions on the path from the root node to $z$, and 
+    \item $u_i(z)$ is the utility of terminal node $z$ for player $i$.
+\end{itemize}
+
+\begin{problem}[8 points]\label{pr:symmetric}
+    Let $\vec{b}_i^{(t)} : \cJ_i \to \Delta(\calA)$ be the behavioral strategy played by player $i$ at time $t$ in CFR. Show that if $\vec{b}_{-i}^{(1)}, \dots, \vec{b}_{-i}^{(t-1)}$ are all symmetric, then $\vec{b}_{i}^{(1)}, \dots, \vec{b}_{i}^{(t)}$ are also symmetric. 
+    \hint{Given two equivalent infosets $(\theta_i, \vec a, \theta_i')$, $(\tilde \theta_i, \vec a,  \tilde \theta_i')$, show that these two infosets will observe the same counterfactual utility $u_i^{(t)}(\cdot|j)$ at every timestep $t$.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+It follows by induction that both players will play symmetric strategies at all timesteps. Use this fact for the remainder of the problem.
+
+\begin{problem}[8 points]
+    Show that, in this game, CFR can be implemented in $O(n^2m^4)$ time per iteration. Briefly discuss: how does this time complexity compare to that of the naive implementation of CFR, whose runtime would be linear in the number of nodes in the tree?
+    \hint{Because of the symmetry condition  that you have just proven, many infosets are ``copies'' of each other, and you don't need to do the work of storing multiple copies of the same infoset. The naive computation will not work---you have to be a bit clever about saving reusable work across infosets.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+\subsection{Imperfect-recall abstraction}
+
+Now consider the imperfect-recall abstraction of $\Gamma$ in which equivalent information sets have been merged into larger infosets. That is, infosets in Step 2 are now identified by tuples $(\theta_i^*, \vec a)$ where $\theta_i^* = \theta_i + \theta_i'$. Call this game $\hat\Gamma$. We define CFR in imperfect-recall games using the formula \eqref{eq:cfr}.  
+
+CFR on imperfect-recall zero-sum games is {\em not} generally guaranteed to converge to Nash equilibrium, even in averages, but you will show that {\em in this particular class of games} CFR works.
+
+\begin{problem}[8 points]
+    Show that, when the local regret minimizer is regret matching, running CFR on $\hat\Gamma$ produces the same iterates as running CFR on $\Gamma$. 
+    \hint{Read the next problem before solving this one.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+\begin{problem}[3 points]\label{pr:rm}
+    Your proof in the previous problem should have used a property specific to (variants of) regret matching. What is that property? Suppose that we were to instead run CFR in $\Gamma$ with FTRL at each infoset and regularization parameter $\eta$. What would we need to do to $\eta$ in $\hat\Gamma$ to recover the same iterates? (No proof required---just state the change)
+\end{problem}
+\begin{solution}
+    \todo{Your solution here}
+\end{solution}
+
+
+\section{Counterfactual Regret Minimization (50 points)}
+
+In this problem, you will implement the CFR regret minimizer for sequence-form decision problems.
+
+You will run your CFR implementation on three games: rock-paper-superscissors (a simple variant of rock-paper-scissors, where beating paper with scissors gives a payoff of $2$ instead of $1$) and two well-known poker variants: Kuhn poker~\citep{Kuhn50:Simplified} and Leduc poker~\citep{Southey05:Bayes}. A description of each game is given in the zip of this homework, according to the format described in \Cref{sec:format}. The zip of the homework also contains a stub Python file to help you set up your implementation. 
+
+\subsection{Format of the game files}\label{sec:format}
+
+Each game is encoded as a json file with the following structure.
+\begin{itemize}
+    \item At the root, we have a dictionary with three keys: \verb|decision_problem_pl1|, \verb|decision_problem_pl2|, and \verb|utility_pl1|. The first two keys contain a description of the tree-form sequential decision problems faced by the two players, while the third is a description of the bilinear utility function for Player 1 as a function of the sequence-form strategies of each player. Since both games are zero-sum, the utility for Player 2 is the opposite of the utility of Player 1.
+    \item The tree of decision points and observation points for each decision problem is stored as a list of nodes. Each node has the following fields
+    \begin{description}
+        \item[\texttt{id}] is a string that represents the identifier of the node. The identifier is unique among the nodes for the same player.
+        \item[\texttt{type}] is a string with value either \verb|decision| (for decision points) or \verb|observation| (for observation points).
+        \item[\texttt{actions}] (only for decision points). This is a set of strings, representing the actions available at the decision node.
+        \item[\texttt{signals}] (only for observation points). This is a set of strings, representing the signals that can be observed at the observation node.
+        \item[\texttt{parent\_edge}] identifies the parent edge of the node. If the node is the root of the tree, then it is \verb|null|. Else, it is a pair \verb|(parent_node_id, action_or_signal)|, where the first member is the \verb|id| of the parent node, and \verb|action_or_signal| is the action or signal that connects the node to its parent. 
+        \item[\texttt{parent\_sequence}] (only for decision points). Identifies the parent sequence $p_j$ of the decision point, defined as the last sequence (that is, decision point-action pair) encountered on the path from the root of the
+        decision process to $j$.
+    \end{description}
+    \begin{remark}
+        The list of nodes of the tree-form sequential decision process is given in top-down traversal order. The bottom-up traversal order can be obtained by reading the list of nodes backwards.
+    \end{remark}
+    \item The bilinear utility function for Player~1 is given through the payoff matrix $\vec{A}$ such that the (expected) utility of Player~1 can be written as
+    \[
+        u_1(\vec{x}, \vec{y}) = \vec{x}^\top \mat{A}\vec{y},
+    \]
+    where $\vec{x}$ and $\vec{y}$ are sequence-form strategies for Players~1 and 2 respectively. We represent $\mat{A}$ in the file as a list of all non-zero matrix entries, storing for each the row index, column index, and value. Specifically, each entry is an object with the fields
+    \begin{description}
+        \item[\texttt{sequence\_pl1}] is a pair \verb|(decision_pt_id_pl1, action_pl1)| which represents the sequence of Player~1 (row of the entry in the matrix).
+        \item[\texttt{sequence\_pl2}] is a pair \verb|(decision_pt_id_pl2, action_pl2)| which represents the sequence of Player~2 (column of the entry in the matrix).
+        \item[\texttt{value}] is the non-zero float value of the matrix entry. 
+    \end{description}
+\end{itemize}
+
+\paragraph{Example: Rock-paper-superscissors}
+
+In the case of rock-paper-superscissors the decision problem faced by each of the players has only one decision points with three actions: playing rock, paper, or superscissors. So, each tree-form sequential decision process only has a single node, which is a decision node. The payoff matrix of the game\footnote{A Nash equilibrium of the game is reached when all players play rock with probability \nicefrac{1}{2}, paper with probability \nicefrac{1}{4} and superscissors with probability \nicefrac{1}{4}. Correspondingly, the game value is $0$.} is
+\begin{center}
+    \begin{tikzpicture}
+        \tikzset{every left delimiter/.style={xshift=1.5ex},
+                every right delimiter/.style={xshift=-1ex}};
+        \matrix [matrix of math nodes,left delimiter=(,right delimiter=),row sep=.008cm,column sep=.008cm,color=black](m)
+        {
+         0 & -1 &  1\\
+         1 &  0 & -2\\
+        -1 &  2 &  0\\
+        };
+        \node at (m-2-3 -| 1.4,0) {.};
+        
+        \node at (m-1-1 -| -1.5,0) {r};
+        \node at (m-2-1 -| -1.5,0) {p};
+        \node at (m-3-1 -| -1.5,0) {s};
+        
+        \node at (m-1-1 |- 0,1.0) {r};
+        \node at (m-1-2 |- 0,1.0) {p};
+        \node at (m-1-3 |- 0,1.0) {s};
+    \end{tikzpicture}
+\end{center}
+So, the game file in this case has content:
+
+{\small\begin{verbatim}
+{
+  "decision_problem_pl1": [
+    {"id": "d1_pl1", "type": "decision", "actions": ["r", "p", "s"],
+     "parent_edge": null, "parent_sequence": null}
+  ],
+  "decision_problem_pl2": [
+    {"id": "d1_pl2", "type": "decision", "actions": ["r", "p", "s"],
+     "parent_edge": null, "parent_sequence": null}
+  ],
+  "utility_pl1": [
+    {"sequence_pl1": ["d1_pl1", "r"], "sequence_pl2": ["d1_pl2", "p"], "value": -1},
+    {"sequence_pl1": ["d1_pl1", "r"], "sequence_pl2": ["d1_pl2", "s"], "value": 1},
+    {"sequence_pl1": ["d1_pl1", "p"], "sequence_pl2": ["d1_pl2", "r"], "value": 1},
+    {"sequence_pl1": ["d1_pl1", "p"], "sequence_pl2": ["d1_pl2", "s"], "value": -2},
+    {"sequence_pl1": ["d1_pl1", "s"], "sequence_pl2": ["d1_pl2", "r"], "value": -1},
+    {"sequence_pl1": ["d1_pl1", "s"], "sequence_pl2": ["d1_pl2", "p"], "value": 2}
+  ]
+}
+\end{verbatim}}
+
+\subsection{Learning to best respond}
+
+Let $\cX$ and $\cY$ be the sequence-form strategy polytopes corresponding to the tree-form sequential decision problems faced by Players~1 and 2 respectively.
+%
+A good smoke test when implementing regret minimization algorithms is to verify that they learn to best respond. In particular, you will verify that your implementation of CFR applied to the decision problem of Player~1 learns a best response against Player~2 when Player~2 plays the \emph{uniform} strategy, that is, the strategy that at each decision points picks any of the available actions with equal probability.
+
+
+Let $\yuni \in \cY$ be the sequence-form representation of the strategy for Player~2 that at each decision point selects each of the available actions with equal probability.
+When Player~2 plays according to that strategy, the utility vector for Player~1 is given by $\vec{u} \defeq \mat{A} \yuni$, where $\mat{A}$ is the payoff matrix of the game.
+
+For each of the three games, take your CFR implementation for the decision problem of Player~1, and let it output strategies $\vec{x}^{(t)} \in \cX$ while giving as feedback at each time $t$ the same utility vector $\vec{u}$. As $T \to \infty$, the average strategy 
+\[
+    \bar{\vec{x}}^{(T)} \defeq \frac{1}{T} \sum_{t=1}^T \vec{x}^{(t)} \in \cX
+    \numberthis{eq:avg pl1}
+\]
+will converge to a best response to the uniform strategy $\yuni$, that is,
+\[
+    \lim_{T\to\infty} \langle \bar{\vec{x}}^{(T)}, \mat{A} \yuni \rangle = \max_{\hat{\vec{x}}\in \cX}  \hat{\vec{x}}^\top \mat{A} \yuni.
+\]
+If the above doesn't happen empirically, something is wrong with your implementation.
+
+\begin{problem}[15 points]
+    In each of the three games, apply your CFR implementation to the tree-form sequential decision problem of Player~1, using as local regret minimizer at each decision point the regret matching algorithm (Lecture~4). At each time $t$, give as feedback to the algorithm the same utility vector $\vec{u} = \mat{A} \yuni$, where $\yuni \in \cY$ is the uniform strategy for Player~2. Run the algorithm for $1000$ iterations. After each iteration $T = 1,\dots,1000$, compute the value $v^{(T)} \defeq \langle \bar{\vec{x}}^{(T)}, \mat{A} \yuni \rangle$ where $\bar{\vec{x}}^{(T)} \in \cX$ is the average strategy output so far by CFR, as defined in~\eqref{eq:avg pl1}. 
+    
+    Plot $v^T$ as a function of $T$. Empirically, what is the limit you observe $v^T$ is converging to?
+    \hint{represent vectors on $\bbR^{|\Sigma|}$ (including the sequence-form strategies output by CFR and utility vectors given to CFR) in memory as dictionaries from sequences (tuples \texttt{(decision\_point\_id, action)}) to floats.}
+    \hint{in rock-paper-superscissor, $v^T$ should approach the value $\nicefrac{1}{3}$. In Kuhn poker, the value \nicefrac{1}{2}. In Leduc poker, the value $2.0875$.}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here. Your solution should include three plots (one for each game), and three values. Don't forget to turn in your implementation.}
+\end{solution}
+
+\subsection{Learning a Nash equilibrium}
+
+Now that you are confident that your implementation of CFR is correct, you will use CFR to converge to Nash equilibrium using the self-play idea described in Lecture~3 and recalled next.
+
+The idea behind using regret minimization to converge to Nash equilibrium in a two-player zero-sum game is to use \emph{self play}. We instantiate two regret minimization algorithms, $\regbox_\cX$ and $\regbox_\cY$, for the domains of the maximization and minimization problem, respectively. At each time $t$ the two regret minimizers output strategies $\vec{x}^{(t)}$ and $\vec{y}^{(t)}$, respectively. Then they receive as feedback the vectors $\vec{u}_\cX^{(t)}, \vec{u}_\cY^{(t)}$ defined as
+\begin{equation}\label{eq:utilities self play}
+      \vec{u}_\cX^{(t)} \defeq \mat{A} \vec{y}^{(t)},\qquad\quad
+      \vec{u}_\cY^{(t)} \defeq -\mat{A}^\top \vec{x}^{(t)},
+\end{equation}
+where $\mat{A}$ is Player~1's payoff matrix.
+
+We summarize the process pictorially in \Cref{fig:no alternation}.
+
+\newcommand{\computeutility}{\tikz[scale=.25]{\draw[thick] (0, 0) -- (1, 0) -- (1, 1) -- (0, 1) -- (0, 0) -- (1.0, 0); \draw[thick] (0, 0) -- (1, 1);}}
+
+\begin{figure}[h]
+    %\vspace{-4mm}
+      \centering
+      \begin{tikzpicture}%[scale=0.75]
+        \begin{scope}[xshift=-7.8cm]
+            \draw[thick] (0, 0) rectangle (1.2, .8);
+            \node at (.6, .4) {$\regbox_\cX$};
+            \draw[thick] (0, -1) rectangle (1.2, -0.2);
+            \node at (.6, -.6) {$\regbox_\cY$};
+            \draw[->] (1.2, .4) node[above right] {$\vec{x}^{(1)}$} -- (2.0, .4);
+            \draw[->] (1.2, -.6) node[above right] {$\vec{y}^{(1)}$} -- (2.0, -.6);
+        
+            \draw[thick] (2.0, .2) rectangle (2.4, .6);
+            \draw[thick] (2.0, .2) -- (2.4, .6);
+            \draw[thick] (2.0, -.8) rectangle (2.4, -.4);
+            \draw[thick] (2.0, -.8) -- (2.4, -.4);
+        
+            \draw[->] (2.4, .4) -- (2.6, .4) -- (3.2, -.6) -- (4, -.6) node[above left] {$\vec{u}_{\cY}^{(1)}$};
+            \draw[->] (2.4, -.6) -- (2.6, -.6) -- (3.2, .4) -- (4, .4) node[above left] {$\vec{u}_{\cX}^{(1)}$};
+        
+            \draw[thick] (4, 0) rectangle (5.2, .8);
+            \node at (4.6, .4) {$\regbox_\cX$};
+            \draw[thick] (4, -1) rectangle (5.2, -0.2);
+            \node at (4.6, -.6) {$\regbox_\cY$};
+            \draw[->] (5.2, .4) node[above right] {$\vec{x}^{(2)}$} -- (6.0, .4);
+            \draw[->] (5.2, -.6) node[above right] {$\vec{y}^{(2)}$} -- (6.0, -.6);
+        \end{scope}
+
+
+        \draw[thick] (0, 0) rectangle (1.2, .8);
+        \node at (.6, .4) {$\regbox_\cX$};
+        \draw[thick] (0, -1) rectangle (1.2, -0.2);
+        \node at (.6, -.6) {$\regbox_\cY$};
+        \draw[->] (-.8, .4) -- (0, .4) node[above left] {$\vec{u}_{\cX}^{(t-1)}$};
+        \draw[->] (-.8, -.6) -- (0, -.6) node[above left] {$\vec{u}_{\cY}^{(t-1)}$};
+        \draw[->] (1.2, .4) node[above right] {$\vec{x}^{(t)}$} -- (2.0, .4);
+        \draw[->] (1.2, -.6) node[above right] {$\vec{y}^{(t)}$} -- (2.0, -.6);
+    
+        \draw[thick] (2.0, .2) rectangle (2.4, .6);
+        \draw[thick] (2.0, .2) -- (2.4, .6);
+        \draw[thick] (2.0, -.8) rectangle (2.4, -.4);
+        \draw[thick] (2.0, -.8) -- (2.4, -.4);
+    
+        \draw[->] (2.4, .4) -- (2.6, .4) -- (3.2, -.6) -- (4, -.6) node[above left] {$\vec{u}_{\cY}^{(t)}$};
+        \draw[->] (2.4, -.6) -- (2.6, -.6) -- (3.2, .4) -- (4, .4) node[above left] {$\vec{u}_{\cX}^{(t)}$};
+    
+        \draw[thick] (4, 0) rectangle (5.2, .8);
+        \node at (4.6, .4) {$\regbox_\cX$};
+        \draw[thick] (4, -1) rectangle (5.2, -0.2);
+        \node at (4.6, -.6) {$\regbox_\cY$};
+        \draw[->] (5.2, .4) node[above right] {$\vec{x}^{(t+1)}$} -- (6.0, .4);
+        \draw[->] (5.2, -.6) node[above right] {$\vec{y}^{(t+1)}$} -- (6.0, -.6);
+    
+        \node at (6.5, -0.1) {$\cdots$};
+        \node at (-1.3, -0.1) {$\cdots$};
+      \end{tikzpicture}
+      %\vspace{-4mm}
+      \caption{The flow of strategies and utilities in regret minimization for games.
+        The symbol \protect\computeutility{} denotes computation/construction of the utility vector.}
+      \label{fig:no alternation}
+    \end{figure}
+
+    As we saw in class, the pair of average strategies produced by the regret minimizers up to any time $T$ converges to a Nash equilibrium, where convergence is measured via the \emph{saddle point gap}
+    \[
+        \max_{\xhat\in\cX} ( \xhat^\top \mat{A} \vec{y}  )  - \min_{\yhat\in\cY} ( \vec{x}^\top \mat{A} \yhat  ).
+    \] 
+    A point $(\vec{x},\vec{y})\in \cX\times\cY$ has zero saddle point gap if and only if it is a Nash equilibrium of the game. 
+
+\begin{problem}[15 points]
+    Let the CFR implementation (using regret matching as the local regret minimizer at each decision point) for Player~1's and Player~2's tree-form sequential decision problems play against each other in self play, as described above.
+    
+    Plot the saddle point gap and the expected utility (for Player~1) of the average strategies as a function of the number of iterations $T = 1,\dots,1000$.
+    \hint{represent vectors on $\bbR^{|\Sigma|}$ (including the sequence-form strategies output by CFR and utility vectors given to CFR) in memory as dictionaries from sequences (tuples \texttt{(decision\_point\_id, action)}) to floats.}
+    \hint{to compute the saddle-point gap, feel free to use the function \texttt{gap(game, strategy\_pl1, strategy\_pl2)} provided in the Python stub file.}
+    \hint{the saddle point gap should be going to zero. The expected utility of the average strategies in rock-paper-superscissor should approach the value $0$. In Kuhn poker it should approach $-0.055$. In Leduc poker it should approach $-0.085$.}\label{prob:cfr}
+\end{problem}
+\begin{solution}
+    \todo{Your solution here. Your solution should include six plots (two for each game---one for the saddle point gap and one for the utility). Don't forget to turn in your implementation.}
+\end{solution}
+
+\subsection{CFR+, Alternating Iterates, and Linear Averaging}
+
+To achieve better performance in practice when learning Nash equilibria in two-player zero-sum games, we consider the following modifications to the setup of the previous subsection.
+\begin{itemize}
+    \item Instead of regret matching, CFR is set up to use the regret matching plus algorithm (see Lecture~4) at each decision point.
+    \item Instead of using the classical self-play scheme described in \Cref{fig:no alternation}, players \emph{alternate} the iterates and feedback: the utility vector $\vec{u}_\cX^{(t)}$ is as defined in~\eqref{eq:utilities self play}, whereas
+    \[
+        \tilde{\vec{u}}_\cY^{(t)} \defeq -\mat{A}^\top \vec{x}^{(t+1)}.
+    \]    
+    \item Finally, the output is weighted average of the strategies, 
+    \[
+        \dbar{\vec{x}}^{(T)} \defeq \frac{1}{\sum_{t=1}^{T} t^\gamma}\sum_{t=1}^{T} t^\gamma\vec{x}^{(t)}, \qquad  
+        \dbar{\vec{y}}^{(T)} \defeq \frac{1}{\sum_{t=1}^{T} t^\gamma}\sum_{t=1}^{T} t^\gamma \vec{y}^{(t)}  
+    \]
+    is considered instead of the regular averages when computing the saddle point gap.
+\end{itemize}
+Collectively, the modified setup we just described is referred to as ``running CFR+''.
+
+\begin{problem}[20 points]
+    Modify your implementation of CFR so that it also supports each of the following variants. 
+    \begin{enumerate}[(a)]
+        \item (10 points) CFR+, with alternating iterates and $\gamma = 1$,
+        \item (4 points) DCFR, with alternating iterates and parameters $\alpha = 1.5, \beta = 0, \gamma = 2$,
+        \item (3 points) PCFR+, with alternating iterates and $\gamma = 2$, and
+        \item (3 points) PCFR+, with alternating iterates and $\gamma = \infty$ ({\em i.e.,} do not average; keep only the last iterate).
+    \end{enumerate}
+    For each variant, run it for $1000$ iterations, plotting the expected utility for Player~1 and the saddle point gap of the averages $\dbar{\vec{x}}^{(T)}, \dbar{\vec{y}}^{(T)}$ after each iteration $T$. Add these lines to your plots from \Cref{prob:cfr}.
+\end{problem}
+
+\begin{solution}
+    \todo{Do not write a solution for this problem. Instead, modify your plots in \Cref{prob:cfr} so that they also contain each of these variants. Make sure to specify which game and which algorithm each plot refers to.}
+\end{solution}
+
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+\end{document}
