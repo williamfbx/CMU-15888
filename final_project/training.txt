@@ -1,0 +1,5 @@
+For each training run, need to do the following:
+1. Change Number of PSRO iterations (default=3)
+2. Change num_episodes in _evaluate_policy_pair()
+3. Configure /handover-sim/GA-DDPG/experiments/cfgs/td3_critic_aux_policy_aux.yaml
+4. Configure /handover-sim/GA-DDPG/experiments/scripts/test_cracker_box.sh
