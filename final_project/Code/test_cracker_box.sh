@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/home/williamfbx/15888-project/handover-sim/venv38/bin/python
 
 set -x
 set -e
@@ -27,7 +27,7 @@ echo Logging output to "$LOG"
 # Build command with optional perturbation parameters
 CMD="/home/williamfbx/15888-project/handover-sim/venv38/bin/python -m core.train_test_offline --pretrained output/${MODEL_NAME} --test --log --record --test_episode_num ${EPI_NUM} --num_runs ${RUN_NUM} --model_surfix ${EPOCH}"
 
-# Add perturbation parameters if set via environment variables
+# Add perturbation parameters
 if [ ! -z "${PERTURB_TRANSLATION_STD}" ]; then
     CMD="${CMD} --perturb_translation_std ${PERTURB_TRANSLATION_STD}"
 fi

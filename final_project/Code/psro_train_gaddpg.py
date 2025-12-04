@@ -17,7 +17,7 @@ def main():
     parser.add_argument('--policy', type=str, default='DDPG',
                         help='Policy name (default: DDPG)')
     parser.add_argument('--pretrained', type=str, default='',
-                        help='Pretrained model directory name in output/')
+                        help='Pretrained model directory name')
     parser.add_argument('--model-name', type=str, default=None,
                         help='Model output name (default: current timestamp)')
     parser.add_argument('--no-visdom', action='store_true',
@@ -27,9 +27,9 @@ def main():
     
     # Adversarial perturbation parameters
     parser.add_argument('--perturb-translation-std', type=float, default=0.0,
-                        help='Translation perturbation standard deviation (m)')
+                        help='Translation perturbation standard deviation (N)')
     parser.add_argument('--perturb-rotation-std', type=float, default=0.0,
-                        help='Rotation perturbation standard deviation (rad)')
+                        help='Rotation perturbation standard deviation (Nm)')
     parser.add_argument('--perturb-duration', type=float, default=0.0,
                         help='Duration of perturbation (s)')
     

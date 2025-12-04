@@ -61,9 +61,9 @@ class PerturbationPolicy:
     def __init__(self, params=None, name=None):
         if params is None:
             self.params = {
-                'translation_std': 0.0,     # Translation force std (N)
-                'rotation_std': 0.0,        # Rotation torque std (Nm)
-                'duration': 0.0,            # Duration of perturbation (s)
+                'translation_std': 0.0,
+                'rotation_std': 0.0,
+                'duration': 0.0,
             }
         else:
             self.params = params.copy()

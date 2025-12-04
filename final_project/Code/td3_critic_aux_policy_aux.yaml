@@ -1,10 +1,9 @@
-RL_MEMORY_SIZE: 500000 # 10000000
+RL_MEMORY_SIZE: 500000
 RL_SAVE_DATA_NAME: 'data_5w.npz'
 RL_TRAIN:
   RL: True
   dagger: True
   batch_size: 16
-  # max_epoch: 80000
   max_epoch: 60000
   updates_per_step: 20
   num_remotes: 7
